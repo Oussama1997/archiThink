@@ -16,13 +16,13 @@ import java.util.Objects;
 public class InvoiceServiceImpl implements InvoiceService{
 
     @Autowired
-    private ClientRepository clientRepository;
+    ClientRepository clientRepository;
     @Autowired
-    private InvoiceRepository invoiceRepository;
+    InvoiceRepository invoiceRepository;
     @Autowired
-    private ProjectRepository projectRepository;
+    ProjectRepository projectRepository;
     @Autowired
-    private InvoiceMapper invoiceMapper;
+    InvoiceMapper invoiceMapper;
 
     @Override
     public InvoiceDto saveInvoice(InvoiceDto invoiceDTO) {

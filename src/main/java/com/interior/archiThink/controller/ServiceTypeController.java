@@ -3,7 +3,6 @@ package com.interior.archiThink.controller;
 import com.interior.archiThink.dto.ServiceTypeDto;
 import com.interior.archiThink.service.ServiceTypeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -15,7 +14,7 @@ import java.util.*;
 public class ServiceTypeController {
 
     @Autowired
-    private ServiceTypeServiceImpl serviceTypeImpl;
+    ServiceTypeServiceImpl serviceTypeImpl;
 
     @GetMapping
     public ResponseEntity<?> getAllServiceType() {

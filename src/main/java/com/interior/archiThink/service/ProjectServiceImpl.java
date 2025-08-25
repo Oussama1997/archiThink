@@ -1,7 +1,6 @@
 package com.interior.archiThink.service;
 
 import com.interior.archiThink.dto.ProjectDto;
-import com.interior.archiThink.mapper.ClientMapper;
 import com.interior.archiThink.mapper.ProjectMapper;
 import com.interior.archiThink.model.Client;
 import com.interior.archiThink.model.Project;
@@ -11,19 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService{
 
     @Autowired
-    private ProjectRepository projectRepository;
+    ProjectRepository projectRepository;
     @Autowired
-    private ClientRepository clientRepository;
+    ClientRepository clientRepository;
     @Autowired
-    private ProjectMapper projectMapper;
+    ProjectMapper projectMapper;
 
     @Override
     public ProjectDto saveProject(ProjectDto projectDTO) {

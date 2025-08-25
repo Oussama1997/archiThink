@@ -3,7 +3,6 @@ package com.interior.archiThink.controller;
 import com.interior.archiThink.dto.ProjectDto;
 import com.interior.archiThink.service.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -16,7 +15,7 @@ import java.util.Objects;
 public class ProjectController {
 
         @Autowired
-        private ProjectServiceImpl projectTypeImpl;
+        ProjectServiceImpl projectTypeImpl;
 
         @GetMapping
         public ResponseEntity<?> getAllProject() {

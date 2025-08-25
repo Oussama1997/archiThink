@@ -2,8 +2,6 @@ package com.interior.archiThink.mapper;
 
 import com.interior.archiThink.dto.ClientDto;
 import com.interior.archiThink.dto.ClientVDto;
-import com.interior.archiThink.dto.InvoiceItemDto;
-import com.interior.archiThink.dto.ProjectDto;
 import com.interior.archiThink.model.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

@@ -2,7 +2,6 @@ package com.interior.archiThink.service;
 
 import com.interior.archiThink.dto.ServiceTypeDto;
 import com.interior.archiThink.mapper.ServiceTypeMapper;
-import com.interior.archiThink.model.Invoice;
 import com.interior.archiThink.model.ServiceType;
 import com.interior.archiThink.repository.ServiceTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,16 +9,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ServiceTypeServiceImpl implements ServiceTypeService{
 
     @Autowired
-    private ServiceTypeRepository serviceTypeRepository;
+    ServiceTypeRepository serviceTypeRepository;
     @Autowired
-    private ServiceTypeMapper serviceTypeMapper;
+    ServiceTypeMapper serviceTypeMapper;
 
     @Override
     public ServiceTypeDto saveServiceType(ServiceTypeDto serviceTypeDTO) {
