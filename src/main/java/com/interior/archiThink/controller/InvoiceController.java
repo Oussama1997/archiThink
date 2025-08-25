@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,15 +27,13 @@ public class InvoiceController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createInvoice(@RequestBody InvoiceDto invoice) {
-        try {
-            InvoiceDto created = invoiceTypeImpl.saveInvoice(invoice);
-            return new ResponseEntity<>(created, HttpStatus.CREATED); // 201 for creation
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred while creating the invoice", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> createInvoice(@RequestBody InvoiceDto invoiceDto,
+            UriComponentsBuilder uriBuilder) {
+        InvoiceDto created = invoiceTypeImpl.saveInvoice(invoiceDto);
+        if(created==null)
+            return ResponseEntity.badRequest().build();
+        var uri = uriBuilder.path("client/{id}").buildAndExpand(created.getId()).toUri();
+        return ResponseEntity.created(uri).body(created); // 201 for creation
     }
 
     @GetMapping("{id}")
@@ -48,22 +47,16 @@ public class InvoiceController {
 
     @PutMapping("{id}")
     public ResponseEntity<?> updateInvoice(@PathVariable Long id, @RequestBody InvoiceDto invoice) {
-        try{
-            InvoiceDto updated = invoiceTypeImpl.updateInvoice(invoice, id);
-            return ResponseEntity.ok(updated);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred while creating the invoice", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        InvoiceDto updated = invoiceTypeImpl.updateInvoice(invoice, id);
+        if(updated == null)
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteInvoice(@PathVariable Long id) {
-        if (invoiceTypeImpl.deleteInvoiceById(id)) {
-            return ResponseEntity.ok("Invoice deleted successfully");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteInvoice(@PathVariable Long id) {
+        if (invoiceTypeImpl.deleteInvoiceById(id))
+            return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
 }

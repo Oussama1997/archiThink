@@ -2,6 +2,7 @@ package com.interior.archiThink.service;
 
 import com.interior.archiThink.dto.ServiceTypeDto;
 import com.interior.archiThink.mapper.ServiceTypeMapper;
+import com.interior.archiThink.model.Invoice;
 import com.interior.archiThink.model.ServiceType;
 import com.interior.archiThink.repository.ServiceTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,10 @@ public class ServiceTypeServiceImpl implements ServiceTypeService{
 
     @Override
     public ServiceTypeDto saveServiceType(ServiceTypeDto serviceTypeDTO) {
-        ServiceType serviceType = serviceTypeRepository.save(serviceTypeMapper.toEntity(serviceTypeDTO));
-        return serviceTypeMapper.toDTO(serviceType);
+        ServiceType savedServiceType = serviceTypeMapper.toEntity(serviceTypeDTO);
+        serviceTypeRepository.save(savedServiceType);
+        serviceTypeDTO.setId(savedServiceType.getId());
+        return serviceTypeDTO;
     }
 
     @Override
@@ -59,12 +62,10 @@ public class ServiceTypeServiceImpl implements ServiceTypeService{
 
     @Override
     public Boolean deleteServiceTypeById(Long id) {
-        Optional<ServiceType> serviceTypeOpt = serviceTypeRepository.findById(id);
-        if (serviceTypeOpt.isPresent()) {
-            serviceTypeRepository.deleteById(id);
-            return Boolean.TRUE;
-        } else {
+        ServiceType serviceType = serviceTypeRepository.findById(id).orElse(null);
+        if (serviceType == null)
             return Boolean.FALSE;
-        }
+        serviceTypeRepository.delete(serviceType);
+        return Boolean.TRUE;
     }
 }

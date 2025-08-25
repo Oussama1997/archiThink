@@ -2,10 +2,8 @@ package com.interior.archiThink.dto;
 
 import com.interior.archiThink.model.ProjectStatus;
 import com.interior.archiThink.model.ProjectType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,8 +12,7 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class ProjectDto {
     private Long id;
     private String name;

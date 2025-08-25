@@ -3,8 +3,10 @@ package com.interior.archiThink.mapper;
 import com.interior.archiThink.dto.ClientDto;
 import com.interior.archiThink.dto.ClientVDto;
 import com.interior.archiThink.dto.InvoiceItemDto;
+import com.interior.archiThink.dto.ProjectDto;
 import com.interior.archiThink.model.*;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import static com.interior.archiThink.utilities.Constants.SPACE;
@@ -13,6 +15,7 @@ import static com.interior.archiThink.utilities.Constants.SPACE;
 public interface ClientMapper {
     ClientDto toDTO(Client client);
     Client toEntity(ClientDto dto);
+    void update(ClientDto dto, @MappingTarget Client project);
 
     default ClientVDto toVDTO(Client client) {
         if (client == null) {

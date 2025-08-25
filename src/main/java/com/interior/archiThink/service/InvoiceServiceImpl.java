@@ -6,14 +6,11 @@ import com.interior.archiThink.model.*;
 import com.interior.archiThink.repository.ClientRepository;
 import com.interior.archiThink.repository.InvoiceRepository;
 import com.interior.archiThink.repository.ProjectRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService{
@@ -29,13 +26,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 
     @Override
     public InvoiceDto saveInvoice(InvoiceDto invoiceDTO) {
-        Invoice invoice = invoiceMapper.toEntity(invoiceDTO);
+        Invoice savedInvoice = invoiceMapper.toEntity(invoiceDTO);
         Client client = clientRepository.findById(invoiceDTO.getClient().getId()).orElse(null);
-        invoice.setClient(client);
+        savedInvoice.setClient(client);
         Project project = projectRepository.findById(invoiceDTO.getProject().getId()).orElse(null);
-        invoice.setProject(project);
-        Invoice savedInvoice = invoiceRepository.save(invoice);
-        return invoiceMapper.toDto(savedInvoice);
+        savedInvoice.setProject(project);
+        invoiceRepository.save(savedInvoice);
+        invoiceDTO.setId(savedInvoice.getId());
+        return invoiceDTO;
     }
 
     @Override
@@ -64,36 +62,35 @@ public class InvoiceServiceImpl implements InvoiceService{
     @Override
     @Transactional
     public InvoiceDto updateInvoice(InvoiceDto invoiceDTO, Long id) {
-        Invoice existingInvoice = invoiceRepository.findById(id).
-            orElseThrow(() -> new EntityNotFoundException("Invoice not found"));
-
-        if(Objects.nonNull(existingInvoice)) {
-            existingInvoice.setName(invoiceDTO.getName());
-            Client client = clientRepository.findById(invoiceDTO.getClient().getId()).orElse(null);
-            existingInvoice.setClient(client);
-            Project project = projectRepository.findById(invoiceDTO.getProject().getId()).orElse(null);
-            existingInvoice.setProject(project);
-            existingInvoice.setTotalPrice(invoiceDTO.getTotalPrice());
-            existingInvoice.setPaymentDate(invoiceDTO.getPaymentDate());
-            existingInvoice.setStatus(invoiceDTO.getStatus());
-            // Replace items
-            if (Objects.nonNull(invoiceDTO.getItems()) && !invoiceDTO.getItems().isEmpty()){
-                existingInvoice.getItems().addAll(invoiceMapper.toItemEntityList(invoiceDTO.getItems()));
-            }
-            Invoice updatedInvoice = invoiceRepository.save(existingInvoice);
-            return invoiceMapper.toDto(updatedInvoice);
-        } else {
+        Invoice existingInvoice = invoiceRepository.findById(id).orElse(null);
+        if(existingInvoice == null)
             return null;
+        Client client = clientRepository.findById(invoiceDTO.getClient().getId()).orElse(null);
+        if(client == null)
+            return null;
+        existingInvoice.setClient(client);
+        Project project = projectRepository.findById(invoiceDTO.getProject().getId()).orElse(null);
+        if(project == null)
+            return null;
+        existingInvoice.setProject(project);
+        existingInvoice.setName(invoiceDTO.getName());
+        existingInvoice.setTotalPrice(invoiceDTO.getTotalPrice());
+        existingInvoice.setPaymentDate(invoiceDTO.getPaymentDate());
+        existingInvoice.setStatus(invoiceDTO.getStatus());
+        // Replace items
+        if (Objects.nonNull(invoiceDTO.getItems()) && !invoiceDTO.getItems().isEmpty()){
+            existingInvoice.getItems().addAll(invoiceMapper.toItemEntityList(invoiceDTO.getItems()));
         }
-
+        Invoice updatedInvoice = invoiceRepository.save(existingInvoice);
+        return invoiceMapper.toDto(updatedInvoice);
     }
 
     @Override
     public Boolean deleteInvoiceById(Long invoiceId) {
-        if (!invoiceRepository.existsById(invoiceId)) {
-            throw new RuntimeException("Invoice not found with id: " + invoiceId);
-        }
-        invoiceRepository.deleteById(invoiceId);
+        Invoice invoice = invoiceRepository.findById(invoiceId).orElse(null);
+        if (invoice == null)
+            return Boolean.FALSE;
+        invoiceRepository.delete(invoice);
         return Boolean.TRUE;
     }
 }

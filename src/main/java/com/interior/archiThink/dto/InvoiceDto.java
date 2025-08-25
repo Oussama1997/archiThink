@@ -1,18 +1,15 @@
 package com.interior.archiThink.dto;
 
 import com.interior.archiThink.model.InvoiceStatus;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class InvoiceDto {
     private Long id;
     private String name;
