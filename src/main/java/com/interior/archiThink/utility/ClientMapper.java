@@ -1,10 +1,10 @@
-package com.interior.archiThink.utilities;
+package com.interior.archiThink.utility;
 
 import com.interior.archiThink.dto.ClientDto;
 import com.interior.archiThink.dto.ClientVDto;
 import com.interior.archiThink.model.Client;
 
-import static com.interior.archiThink.utilities.Constants.SPACE;
+import static com.interior.archiThink.utility.Constants.SPACE;
 
 public class ClientMapper {
 
