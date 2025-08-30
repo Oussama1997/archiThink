@@ -1,4 +1,4 @@
-package com.interior.archiThink.utilities;
+package com.interior.archiThink.utility;
 
 public class Constants {
     public final static String SERVICE = "SERVICE";

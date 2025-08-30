@@ -9,21 +9,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ServiceTypeServiceImpl implements ServiceTypeService{
 
     @Autowired
-    private ServiceTypeRepository serviceTypeRepository;
+    ServiceTypeRepository serviceTypeRepository;
     @Autowired
-    private ServiceTypeMapper serviceTypeMapper;
+    ServiceTypeMapper serviceTypeMapper;
 
     @Override
     public ServiceTypeDto saveServiceType(ServiceTypeDto serviceTypeDTO) {
-        ServiceType serviceType = serviceTypeRepository.save(serviceTypeMapper.toEntity(serviceTypeDTO));
-        return serviceTypeMapper.toDTO(serviceType);
+        ServiceType savedServiceType = serviceTypeMapper.toEntity(serviceTypeDTO);
+        serviceTypeRepository.save(savedServiceType);
+        serviceTypeDTO.setId(savedServiceType.getId());
+        return serviceTypeDTO;
     }
 
     @Override
@@ -59,12 +60,10 @@ public class ServiceTypeServiceImpl implements ServiceTypeService{
 
     @Override
     public Boolean deleteServiceTypeById(Long id) {
-        Optional<ServiceType> serviceTypeOpt = serviceTypeRepository.findById(id);
-        if (serviceTypeOpt.isPresent()) {
-            serviceTypeRepository.deleteById(id);
-            return Boolean.TRUE;
-        } else {
+        ServiceType serviceType = serviceTypeRepository.findById(id).orElse(null);
+        if (serviceType == null)
             return Boolean.FALSE;
-        }
+        serviceTypeRepository.delete(serviceType);
+        return Boolean.TRUE;
     }
 }

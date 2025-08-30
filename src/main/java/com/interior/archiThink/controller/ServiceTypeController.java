@@ -3,9 +3,9 @@ package com.interior.archiThink.controller;
 import com.interior.archiThink.dto.ServiceTypeDto;
 import com.interior.archiThink.service.ServiceTypeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 
@@ -14,7 +14,7 @@ import java.util.*;
 public class ServiceTypeController {
 
     @Autowired
-    private ServiceTypeServiceImpl serviceTypeImpl;
+    ServiceTypeServiceImpl serviceTypeImpl;
 
     @GetMapping
     public ResponseEntity<?> getAllServiceType() {
@@ -26,15 +26,13 @@ public class ServiceTypeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createServiceType(@RequestBody ServiceTypeDto serviceType) {
-        try {
-            ServiceTypeDto created = serviceTypeImpl.saveServiceType(serviceType);
-            return new ResponseEntity<>(created, HttpStatus.CREATED); // 201 for creation
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred while creating the service type", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> createServiceType(@RequestBody ServiceTypeDto serviceTypeDto,
+            UriComponentsBuilder uriBuilder) {
+        ServiceTypeDto created = serviceTypeImpl.saveServiceType(serviceTypeDto);
+        if(created==null)
+            return ResponseEntity.badRequest().build();
+        var uri = uriBuilder.path("client/{id}").buildAndExpand(created.getId()).toUri();
+        return ResponseEntity.created(uri).body(created); // 201 for creation
     }
 
     @GetMapping("{id}")
@@ -49,18 +47,15 @@ public class ServiceTypeController {
     @PutMapping("{id}")
     public ResponseEntity<ServiceTypeDto> updateServiceType(@PathVariable Long id, @RequestBody ServiceTypeDto serviceType) {
         ServiceTypeDto updated = serviceTypeImpl.updateServiceType(serviceType, id);
-        if(Objects.nonNull(updated)) {
-            return ResponseEntity.ok(updated);
-        }
-        return ResponseEntity.notFound().build();
+        if(updated == null)
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Object> deleteServiceType(@PathVariable Long id) {
-        if (serviceTypeImpl.deleteServiceTypeById(id)) {
-            return ResponseEntity.ok("ServiceType deleted successfully");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteServiceType(@PathVariable Long id) {
+        if (serviceTypeImpl.deleteServiceTypeById(id))
+            return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
 }

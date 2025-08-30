@@ -14,6 +14,8 @@ public class ServiceType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique=true)
     private String name;
     private BigDecimal hourlyRate;
 

@@ -1,4 +1,4 @@
-package com.interior.archiThink.utilities;
+package com.interior.archiThink.utility;
 
 import com.interior.archiThink.dto.InvoiceDto;
 import com.interior.archiThink.dto.InvoiceItemDto;

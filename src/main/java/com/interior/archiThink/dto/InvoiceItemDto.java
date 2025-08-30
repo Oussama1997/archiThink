@@ -1,16 +1,13 @@
 package com.interior.archiThink.dto;
 
 import com.interior.archiThink.model.ItemType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.math.BigDecimal;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class InvoiceItemDto {
     private Long id;
     private int quantity;

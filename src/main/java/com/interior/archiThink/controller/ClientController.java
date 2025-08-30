@@ -3,9 +3,9 @@ package com.interior.archiThink.controller;
 import com.interior.archiThink.dto.ClientDto;
 import com.interior.archiThink.service.ClientServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +15,7 @@ import java.util.Objects;
 public class ClientController {
 
     @Autowired
-    private ClientServiceImpl clientTypeImpl;
+    ClientServiceImpl clientTypeImpl;
 
     @GetMapping
     public ResponseEntity<?> getAllClient() {
@@ -27,15 +27,13 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createClient(@RequestBody ClientDto clientDTO) {
-        try {
-            ClientDto created = clientTypeImpl.saveClient(clientDTO);
-            return new ResponseEntity<>(created, HttpStatus.CREATED); // 201 for creation
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred while creating the client", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> createClient(@RequestBody ClientDto clientDTO,
+            UriComponentsBuilder uriBuilder) {
+        ClientDto created = clientTypeImpl.saveClient(clientDTO);
+        if(created==null)
+            return ResponseEntity.badRequest().build();
+        var uri = uriBuilder.path("client/{id}").buildAndExpand(created.getId()).toUri();
+        return ResponseEntity.created(uri).body(created); // 201 for creation
     }
 
     @GetMapping("{id}")
@@ -49,22 +47,16 @@ public class ClientController {
 
     @PutMapping("{id}")
     public ResponseEntity<?> updateClient(@PathVariable Long id, @RequestBody ClientDto clientDTO) {
-        try{
-            ClientDto updated = clientTypeImpl.updateClient(clientDTO, id);
-            return ResponseEntity.ok(updated);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred while creating the client", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        ClientDto updated = clientTypeImpl.updateClient(clientDTO, id);
+        if(updated == null)
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteClient(@PathVariable Long id) {
-        if (clientTypeImpl.deleteClientById(id)) {
-            return ResponseEntity.ok("Client deleted successfully");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
+        if (clientTypeImpl.deleteClientById(id))
+            return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
 }
